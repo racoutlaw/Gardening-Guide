@@ -1,0 +1,549 @@
+<title>Plant by Frost</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+:root{
+  --paper:#f3f5ee; --card:#ffffff; --ink:#1c2620; --muted:#5a695f; --line:#d6dccf; --line-soft:#e7ebe2;
+  --leaf:#3b7536; --leaf-soft:#e1ecd8; --seed:#8a6429; --seed-soft:#f0e6d2;
+  --fall:#b0661a; --fall-soft:#f6e6d2; --frost:#2f6690; --frost-soft:#dfeaf4;
+  --warn:#a8402a; --warn-soft:#f5e1da; --focus:#2f6690;
+  --display:"Zilla Slab", Rockwell, "Roboto Slab", Georgia, serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#121814; --card:#19211b; --ink:#e3eae2; --muted:#9aa89d; --line:#2d3a31; --line-soft:#222c25;
+    --leaf:#86c475; --leaf-soft:#1f3120; --seed:#d7b06a; --seed-soft:#33291a;
+    --fall:#e4a353; --fall-soft:#382716; --frost:#86b8e2; --frost-soft:#1a2835;
+    --warn:#ee8a70; --warn-soft:#3a211b; --focus:#86b8e2;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#121814; --card:#19211b; --ink:#e3eae2; --muted:#9aa89d; --line:#2d3a31; --line-soft:#222c25;
+  --leaf:#86c475; --leaf-soft:#1f3120; --seed:#d7b06a; --seed-soft:#33291a;
+  --fall:#e4a353; --fall-soft:#382716; --frost:#86b8e2; --frost-soft:#1a2835;
+  --warn:#ee8a70; --warn-soft:#3a211b; --focus:#86b8e2;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;padding:0 16px;font-variant-numeric:tabular-nums}
+.wrap{max-width:1040px;margin:0 auto;padding-block:28px 56px;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.15;margin:0;text-wrap:balance}
+h1{font-size:clamp(2rem,5vw,2.9rem);letter-spacing:-.01em}
+h2{font-size:1.45rem}
+h3{font-size:1.05rem}
+p{margin:0}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.muted{color:var(--muted)}
+.eyebrow{font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 24px}
+.top .lede{max-width:34rem;color:var(--muted);margin-top:6px}
+.zipform{display:flex;gap:8px;align-items:stretch}
+.zipform label{position:absolute;left:-9999px}
+.zipform input{width:8.5ch;padding:10px 12px;border:1.5px solid var(--line);border-radius:6px;background:var(--card);font-size:1.15rem;letter-spacing:.06em}
+.btn{padding:10px 16px;border-radius:6px;border:1.5px solid var(--leaf);background:var(--leaf);color:var(--paper);font-weight:700;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.small{padding:6px 12px;font-size:.9rem}
+.err{color:var(--warn);font-size:.92rem;min-height:1.4em}
+
+/* place card */
+.place{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:20px 32px}
+@media (max-width:760px){.place{grid-template-columns:1fr}}
+.place .town{font-family:var(--display);font-size:1.7rem;font-weight:700;line-height:1.1}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:.85rem;font-weight:700;background:var(--leaf-soft);color:var(--leaf)}
+.chip.frost{background:var(--frost-soft);color:var(--frost)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.source{font-size:.85rem;color:var(--muted);margin-top:12px}
+.frostgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:520px){.frostgrid{grid-template-columns:1fr 1fr}.frostgrid .season{grid-column:1 / -1}}
+.fd{border-left:3px solid var(--frost);padding:2px 0 2px 12px}
+.fd.season{border-color:var(--leaf)}
+.fd .big{font-family:var(--display);font-size:1.6rem;font-weight:700;line-height:1.1}
+.fd .sub{font-size:.86rem;color:var(--muted)}
+.bird{grid-column:1 / -1;display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:8px;background:var(--seed-soft);color:var(--ink);font-size:.95rem}
+.bird svg{flex:none;color:var(--seed);margin-top:2px}
+.bird b{color:var(--seed)}
+details.adjust{grid-column:1 / -1;font-size:.93rem}
+details.adjust summary{cursor:pointer;color:var(--frost);font-weight:700;width:max-content}
+.adjrow{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;margin-top:12px}
+.adjrow label{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--muted)}
+.adjrow input{padding:7px 10px;border:1.5px solid var(--line);border-radius:6px;background:var(--paper)}
+.notice{grid-column:1 / -1;padding:10px 14px;border-radius:8px;background:var(--warn-soft);color:var(--warn);font-size:.93rem}
+
+/* now */
+.nowhead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px}
+.now{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:14px}
+@media (max-width:820px){.now{grid-template-columns:1fr}}
+.col{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 16px 10px;display:flex;flex-direction:column;gap:10px}
+.col h3{display:flex;align-items:center;gap:8px}
+.dot{width:10px;height:10px;border-radius:3px;flex:none}
+.col ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.col li{border-top:1px solid var(--line-soft)}
+.col li button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;justify-content:space-between;gap:10px;width:100%;padding:8px 2px}
+.col li button:hover .nm{text-decoration:underline}
+.col li button:focus-visible{outline:2px solid var(--focus)}
+.col .nm{font-weight:700}
+.col .when{font-size:.85rem;color:var(--muted);text-align:right;white-space:nowrap}
+.col .empty{color:var(--muted);font-size:.93rem;padding:6px 0 10px}
+.col .more{font-size:.85rem;color:var(--muted);padding:6px 2px}
+
+/* calendar */
+.calhead{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:7px 12px;cursor:pointer;font-size:.92rem}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);font-weight:700}
+.controls input[type=search],.controls select{padding:7px 10px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);font-size:.92rem}
+.controls input[type=search]{width:13rem;max-width:100%}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-size:.92rem;cursor:pointer}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.85rem;color:var(--muted);margin:14px 0 8px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:18px;height:8px;border-radius:2px}
+.legend i.line{width:2px;height:12px;border-radius:0}
+
+.cal{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.row{display:grid;grid-template-columns:minmax(120px,190px) minmax(0,1fr)}
+.mhead{position:sticky;top:env(safe-area-inset-top,0px);z-index:2;background:var(--card);border-bottom:1px solid var(--line)}
+.mhead .lab{padding:8px 12px;font-size:.78rem;color:var(--muted)}
+.months{position:relative;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));font-size:.72rem;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.months span{padding:9px 0 8px 4px;border-left:1px solid var(--line-soft);overflow:hidden;white-space:nowrap}
+.crow{border-top:1px solid var(--line-soft)}
+.crow:first-of-type{border-top:0}
+.crow.off .name .n{color:var(--muted)}
+.crow.off .track .bar{opacity:.35}
+.name{display:flex;align-items:center;gap:4px;padding:0 6px 0 4px;min-width:0}
+.star{all:unset;cursor:pointer;width:28px;height:28px;display:grid;place-items:center;flex:none;color:var(--line);border-radius:6px}
+.star[aria-pressed="true"]{color:var(--seed)}
+.star:focus-visible{outline:2px solid var(--focus)}
+.name .open{all:unset;cursor:pointer;flex:1;min-width:0;padding:7px 0;font-weight:700;font-size:.93rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.name .open:focus-visible{outline:2px solid var(--focus)}
+.name .open:hover{text-decoration:underline}
+.track{position:relative;height:36px;background:repeating-linear-gradient(to right,transparent 0,transparent calc(100%/12 - 1px),var(--line-soft) calc(100%/12 - 1px),var(--line-soft) calc(100%/12))}
+.bar{position:absolute;height:12px;top:12px;border-radius:3px}
+.bar.indoor{background:var(--seed)}
+.bar.plant{background:var(--leaf)}
+.bar.fall{background:var(--fall)}
+.bar.fallindoor{background:var(--seed);opacity:.7}
+.vline{position:absolute;top:0;bottom:0;width:2px;pointer-events:none;z-index:1}
+.vline.today{background:var(--ink);opacity:.7}
+.vline.lf,.vline.ff{background:var(--frost);opacity:.55;width:0;border-left:2px dashed var(--frost);background:none}
+.mhead .vtag{position:absolute;bottom:-1px;transform:translateX(-50%);font-size:.66rem;font-weight:700;padding:1px 4px;border-radius:3px;white-space:nowrap}
+.mhead .vtag.today{background:var(--ink);color:var(--paper)}
+.detail{grid-column:1 / -1;background:var(--paper);border-top:1px solid var(--line-soft);padding:16px 18px 18px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px 28px}
+@media (max-width:640px){.detail{grid-template-columns:1fr}}
+.detail h3{font-size:1.25rem}
+.wins{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.wins li{display:flex;gap:10px;align-items:baseline}
+.wins .dot{transform:translateY(1px)}
+.wins b{white-space:nowrap}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:.93rem;margin:0}
+.facts dt{color:var(--muted)}
+.facts dd{margin:0}
+.tip{grid-column:1 / -1;font-size:.95rem;max-width:70ch}
+.none{padding:22px;color:var(--muted)}
+.family{grid-column:1 / -1;background:var(--seed-soft);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;max-width:75ch}
+.family .eyebrow{color:var(--seed)}
+.family h4{font-family:var(--display);font-size:1.15rem;margin:0}
+.family ol{margin:2px 0 0;padding-left:1.3em;display:flex;flex-direction:column;gap:3px}
+.family p{font-size:.95rem}
+.fam-tag{font-size:.7rem;font-weight:700;color:var(--seed);background:var(--seed-soft);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:1px}
+
+footer{font-size:.85rem;color:var(--muted);display:flex;flex-direction:column;gap:6px;max-width:75ch}
+footer a{color:inherit}
+@media (max-width:520px){
+  .row{grid-template-columns:118px minmax(0,1fr)}
+  .months span{font-size:.62rem;padding-left:2px;letter-spacing:0}
+  .name .open{font-size:.86rem}
+}
+@media (prefers-reduced-motion:no-preference){.detail{animation:fade .18s ease-out}@keyframes fade{from{opacity:.4}to{opacity:1}}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="eyebrow">Garden planner</p>
+      <h1>Plant by Frost</h1>
+      <p class="lede">What to plant and when, timed from the frost dates where you live.</p>
+    </div>
+    <form class="zipform" id="zipform" autocomplete="off">
+      <label for="zip">ZIP code</label>
+      <input id="zip" name="zip" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="ZIP">
+      <button class="btn" type="submit">Look up</button>
+    </form>
+  </header>
+  <p class="err" id="err" role="status" hidden></p>
+
+  <section class="place" id="place" aria-live="polite"></section>
+
+  <section>
+    <div class="nowhead">
+      <h2 id="nowtitle">This week</h2>
+      <p class="muted" id="nowsub"></p>
+    </div>
+    <div class="now">
+      <div class="col"><h3><span class="dot" style="background:var(--seed)"></span>Start seeds indoors</h3><ul id="now-indoor"></ul></div>
+      <div class="col"><h3><span class="dot" style="background:var(--leaf)"></span>Plant outside</h3><ul id="now-plant"></ul></div>
+      <div class="col"><h3><span class="dot" style="background:var(--frost)"></span>Coming up in 3 weeks</h3><ul id="now-soon"></ul></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="calhead">
+      <h2>Planting calendar</h2>
+      <div class="controls">
+        <div class="seg" role="group" aria-label="Plant type" id="cats">
+          <button type="button" data-c="v" aria-pressed="true">Vegetables</button>
+          <button type="button" data-c="h" aria-pressed="false">Herbs</button>
+          <button type="button" data-c="f" aria-pressed="false">Fruit &amp; nuts</button>
+          <button type="button" data-c="all" aria-pressed="false">All</button>
+        </div>
+        <input type="search" id="q" placeholder="Find a plant" aria-label="Find a plant">
+        <select id="sort" aria-label="Sort">
+          <option value="date">By planting date</option>
+          <option value="az">A to Z</option>
+        </select>
+        <label class="toggle"><input type="checkbox" id="mine"> My garden only</label>
+      </div>
+    </div>
+    <div class="legend">
+      <span><i style="background:var(--seed)"></i>Start indoors</span>
+      <span><i style="background:var(--leaf)"></i>Spring &amp; summer planting</span>
+      <span><i style="background:var(--fall)"></i>Fall planting</span>
+      <span><i class="line" style="background:var(--ink)"></i>Today</span>
+      <span><i class="line" style="border-left:2px dashed var(--frost)"></i>Average frost dates</span>
+    </div>
+    <div class="cal" id="cal"></div>
+  </section>
+
+  <footer>
+    <p>Frost dates: NOAA National Centers for Environmental Information, U.S. Climate Normals 1991–2020, from the nearest weather station with frost records. Hardiness zones: 2023 USDA Plant Hardiness Zone Map by ZIP code (USDA Agricultural Research Service and the PRISM Climate Group, Oregon State University). ZIP code places: GeoNames (CC BY 4.0).</p>
+    <p>Planting windows are general guides built from common extension-service timing. Soil temperature, your variety's days to maturity and local conditions matter too. Your county extension office has the final word for your area.</p>
+  </footer>
+</div>
+
+<script>
+/*__FROST_DATA__*/
+</script>
+<script>
+(function(){
+"use strict";
+// c: v veg, h herb, f fruit/nut. k: T tender, H half-hardy, F frost-hardy.
+// si/so: weeks relative to last spring frost (negative = before). fo/fi: weeks relative to first fall frost.
+// how: S sow, T transplant, E sow or transplant, P plants/sets/crowns/trees. succ: keep sowing until frost minus days to maturity.
+// fmin: fall window only when the frost-free season is at least this many days. fz: fall window only at this zone or warmer.
+// z: [coldest, warmest] zone for perennials. y: years to first harvest.
+const CROPS=[
+{n:"Tomatoes",c:"v",k:"T",d:[60,85],si:[-8,-6],so:[1,3],how:"T",fo:[-17,-14],fmin:200,sp:"24–36 in",dp:"¼ in",sun:"Full sun",t:"Set transplants deep; new roots form along the buried stem. Stake or cage at planting. Where the season is long, a second planting set out in midsummer bears until frost.",
+ fam:{title:"W.T. Stribling's pipe method",steps:["Dig the hole deep.","Before the plant or any dirt goes in, stand a piece of black plastic pipe in the hole, all the way to the bottom.","Set the plant and fill in the dirt around it, leaving the top of the pipe sticking out of the ground.","Water by putting the hose in the pipe. Fertilizer goes down the pipe too."],why:"As he put it, you're watering the roots, not the ground, instead of making the water and fertilizer work their way down to the roots. Deep water also pulls the roots deeper, keeps soil from splashing up onto the leaves, and gives the plant steadier moisture, so fewer tomatoes crack or rot on the bottom."}},
+{n:"Bell peppers",c:"v",k:"T",d:[60,90],si:[-10,-8],so:[2,4],how:"T",sp:"18–24 in",dp:"¼ in",sun:"Full sun",t:"Peppers stall in cold soil, so wait until nights stay above 55°F. Plants keep bearing until frost."},
+{n:"Hot peppers",c:"v",k:"T",d:[70,100],si:[-10,-8],so:[2,4],how:"T",sp:"18–24 in",dp:"¼ in",sun:"Full sun",t:"Seed is slow to sprout; keep it near 80°F. Hot peppers handle summer heat better than bells."},
+{n:"Eggplant",c:"v",k:"T",d:[65,85],si:[-10,-8],so:[2,4],how:"T",sp:"18–24 in",dp:"¼ in",sun:"Full sun",t:"Needs warm soil. Row cover early on keeps flea beetles off young plants."},
+{n:"Tomatillos",c:"v",k:"T",d:[70,100],si:[-8,-6],so:[1,3],how:"T",sp:"36 in",dp:"¼ in",sun:"Full sun",t:"Plant at least two; they need a partner to set fruit. Harvest when the husk splits."},
+{n:"Cucumbers",c:"v",k:"T",d:[50,70],so:[1,4],how:"S",succ:1,sp:"12 in on a trellis, 36 in sprawling",dp:"1 in",sun:"Full sun",t:"Sow again every 3–4 weeks for a steady supply. Pick daily once they start."},
+{n:"Summer squash & zucchini",c:"v",k:"T",d:[45,60],so:[1,4],how:"S",succ:1,sp:"24–36 in",dp:"1 in",sun:"Full sun",t:"A second sowing in midsummer outlasts squash vine borers that kill the first planting."},
+{n:"Winter squash",c:"v",k:"T",d:[80,110],so:[1,4],how:"S",succ:1,sp:"36–60 in",dp:"1 in",sun:"Full sun",t:"Harvest when the rind resists a thumbnail, then cure 10 days in a warm spot before storing."},
+{n:"Pumpkins",c:"v",k:"T",d:[90,120],so:[2,5],how:"S",succ:1,sp:"48–72 in",dp:"1 in",sun:"Full sun",t:"For Halloween pumpkins, count back the variety's days to maturity from mid-October."},
+{n:"Snap beans (bush)",c:"v",k:"T",d:[50,60],so:[1,4],how:"S",succ:1,sp:"3–4 in",dp:"1 in",sun:"Full sun",t:"Sow a short row every 2–3 weeks. Bush beans bear heavily for about 3 weeks."},
+{n:"Pole beans",c:"v",k:"T",d:[60,70],so:[1,4],how:"S",succ:1,sp:"6 in along a trellis",dp:"1 in",sun:"Full sun",t:"One planting bears for weeks if you keep picking."},
+{n:"Lima (butter) beans",c:"v",k:"T",d:[65,90],so:[2,5],how:"S",succ:1,sp:"4–6 in",dp:"1 in",sun:"Full sun",t:"Wait for warm soil (65°F or more); seed rots in cold ground."},
+{n:"Southern peas (field peas)",c:"v",k:"T",d:[60,90],so:[3,8],how:"S",succ:1,sp:"3–4 in",dp:"1 in",sun:"Full sun",t:"Crowders, purple hulls and blackeyes love heat and poor soil. Go easy on nitrogen."},
+{n:"Sweet corn",c:"v",k:"T",d:[65,90],so:[1,4],how:"S",succ:1,sp:"9–12 in, rows 30 in",dp:"1–1½ in",sun:"Full sun",t:"Plant in a block of at least 4 short rows for good pollination. Sow again every 2 weeks."},
+{n:"Okra",c:"v",k:"T",d:[50,65],so:[3,6],how:"S",succ:1,sp:"12–18 in",dp:"1 in",sun:"Full sun",t:"Soak seed overnight. Pick pods at 3–4 inches, every other day."},
+{n:"Sweet potatoes",c:"v",k:"T",d:[90,120],so:[2,6],how:"P",succ:1,sp:"12–18 in",dp:"Slips to the top leaves",sun:"Full sun",t:"Set rooted slips once the soil is warm. Dig before frost and cure 1–2 weeks in a warm place."},
+{n:"Peanuts",c:"v",k:"T",d:[120,150],so:[2,5],how:"S",sp:"6–8 in",dp:"1½–2 in",sun:"Full sun",t:"Loose, sandy soil lets the pegs push underground. Dig when the leaves yellow."},
+{n:"Edamame",c:"v",k:"T",d:[80,100],so:[1,4],how:"S",succ:1,sp:"3–4 in",dp:"1 in",sun:"Full sun",t:"Pick when the pods are plump and still bright green."},
+{n:"Lettuce",c:"v",k:"H",d:[30,60],si:[-6,-4],so:[-4,2],how:"E",fo:[-10,-6],sp:"8–12 in",dp:"⅛ in",sun:"Full sun to part shade",t:"Bolts and turns bitter in heat. Sow small amounts every 2 weeks while it's cool."},
+{n:"Spinach",c:"v",k:"F",d:[37,50],so:[-6,-3],how:"S",fo:[-8,-4],sp:"3–4 in",dp:"½ in",sun:"Full sun to part shade",t:"Fall-sown spinach often overwinters in mild areas and gives a second cutting in spring."},
+{n:"Kale",c:"v",k:"F",d:[55,75],si:[-10,-8],so:[-5,-2],how:"T",fo:[-12,-8],sp:"12–18 in",dp:"½ in",sun:"Full sun",t:"Frost sweetens the leaves. Fall kale keeps producing well into winter."},
+{n:"Collards",c:"v",k:"F",d:[60,80],si:[-10,-8],so:[-4,-1],how:"T",fo:[-12,-8],sp:"18 in",dp:"½ in",sun:"Full sun",t:"The fall crop is the one to grow; a frost or two makes them sweet."},
+{n:"Swiss chard",c:"v",k:"H",d:[50,60],so:[-2,2],how:"S",fo:[-10,-6],sp:"8–12 in",dp:"½ in",sun:"Full sun to part shade",t:"Cut outer leaves and it keeps coming. Handles summer heat better than spinach."},
+{n:"Arugula",c:"v",k:"F",d:[30,45],so:[-4,-1],how:"S",fo:[-8,-4],sp:"4–6 in",dp:"¼ in",sun:"Full sun to part shade",t:"Fast and easy. Turns hot and bolts once the weather warms."},
+{n:"Mustard greens",c:"v",k:"F",d:[35,50],so:[-4,-1],how:"S",fo:[-8,-4],sp:"6 in",dp:"¼ in",sun:"Full sun",t:"Pick leaves young for salads, larger for cooking."},
+{n:"Turnips",c:"v",k:"F",d:[40,60],so:[-4,-1],how:"S",fo:[-10,-6],sp:"4–6 in",dp:"½ in",sun:"Full sun",t:"Grow for greens, roots or both. Fall turnips are sweeter than spring ones."},
+{n:"Bok choy",c:"v",k:"H",d:[45,60],so:[-4,-1],how:"S",fo:[-8,-5],sp:"6–10 in",dp:"¼ in",sun:"Full sun to part shade",t:"Warm spells cause bolting, so fall plantings are the most reliable."},
+{n:"Napa cabbage",c:"v",k:"H",d:[50,70],so:[-4,-2],how:"S",fo:[-12,-9],sp:"12–18 in",dp:"¼ in",sun:"Full sun",t:"Best as a fall crop; spring plantings tend to bolt."},
+{n:"Broccoli",c:"v",k:"H",d:[60,85],si:[-10,-7],so:[-4,-2],how:"T",fi:[-16,-14],fo:[-12,-10],sp:"18–24 in",dp:"¼ in",sun:"Full sun",t:"Cut the main head while the buds are tight; side shoots follow for weeks."},
+{n:"Cauliflower",c:"v",k:"H",d:[60,90],si:[-10,-8],so:[-3,-1],how:"T",fi:[-16,-14],fo:[-12,-10],sp:"18–24 in",dp:"¼ in",sun:"Full sun",t:"Fussy about heat and stress. Tie leaves over the head once it shows to keep it white."},
+{n:"Cabbage",c:"v",k:"F",d:[70,100],si:[-10,-8],so:[-5,-2],how:"T",fi:[-16,-14],fo:[-12,-10],sp:"12–24 in",dp:"¼ in",sun:"Full sun",t:"Even watering keeps heads from splitting."},
+{n:"Brussels sprouts",c:"v",k:"F",d:[90,110],si:[-10,-8],so:[-4,-2],how:"T",fi:[-20,-17],fo:[-16,-13],sp:"18–24 in",dp:"¼ in",sun:"Full sun",t:"They need cool weather while the sprouts form. In warm climates the fall crop does far better than spring."},
+{n:"Kohlrabi",c:"v",k:"F",d:[45,60],so:[-4,-1],how:"S",fo:[-10,-7],sp:"6 in",dp:"½ in",sun:"Full sun",t:"Harvest at 2–3 inches across, before it turns woody."},
+{n:"Carrots",c:"v",k:"H",d:[60,80],so:[-3,1],how:"S",fo:[-12,-9],sp:"2–3 in",dp:"¼ in",sun:"Full sun",t:"Keep the seedbed moist until they sprout, which can take two weeks. Loose, rock-free soil makes straight roots."},
+{n:"Beets",c:"v",k:"H",d:[50,70],so:[-4,0],how:"S",fo:[-10,-7],sp:"3–4 in",dp:"½ in",sun:"Full sun",t:"Each seed makes several seedlings. Thin them and eat the thinnings."},
+{n:"Radishes",c:"v",k:"F",d:[22,30],so:[-5,0],how:"S",fo:[-6,-2],sp:"1–2 in",dp:"½ in",sun:"Full sun",t:"Sow a little every 10 days. They turn pithy and hot in warm weather."},
+{n:"Rutabagas",c:"v",k:"F",d:[80,100],so:[-4,-2],how:"S",fo:[-14,-12],sp:"6–8 in",dp:"½ in",sun:"Full sun",t:"Mainly a fall crop; roots sweeten in cold weather."},
+{n:"Parsnips",c:"v",k:"F",d:[100,130],so:[-3,0],how:"S",sp:"3–4 in",dp:"½ in",sun:"Full sun",t:"Use fresh seed every year. Leave the roots in the ground until after a few frosts."},
+{n:"Garden peas",c:"v",k:"F",d:[55,70],so:[-6,-3],how:"S",fo:[-12,-9],sp:"2 in",dp:"1 in",sun:"Full sun",t:"Give them a fence to climb. Heat ends the harvest quickly."},
+{n:"Sugar snap & snow peas",c:"v",k:"F",d:[55,70],so:[-6,-3],how:"S",fo:[-12,-9],sp:"2 in",dp:"1 in",sun:"Full sun",t:"Pick snow peas flat and snaps once the pods fill. Picking often keeps them coming."},
+{n:"Onions",c:"v",k:"F",d:[90,120],so:[-8,-3],how:"P",sp:"4–6 in",dp:"1 in",sun:"Full sun",t:"Choose by day length: short-day onions for the South, long-day for the North. Stop watering when the tops fall over."},
+{n:"Garlic",c:"v",k:"F",d:[240,270],fo:[-2,4],how:"P",sp:"6 in",dp:"2 in, pointed end up",sun:"Full sun",t:"Plant cloves around first frost and harvest the next early summer, when a third of the leaves have browned. Softneck types suit the South."},
+{n:"Shallots",c:"v",k:"F",d:[90,120],so:[-6,-3],fo:[-2,4],how:"P",sp:"6–8 in",dp:"Tip just showing",sun:"Full sun",t:"Each bulb splits into a cluster. Fall planting gives bigger clusters."},
+{n:"Leeks",c:"v",k:"F",d:[100,130],si:[-12,-10],so:[-4,-1],how:"T",sp:"6 in",dp:"Set in a 6 in trench",sun:"Full sun",t:"Hill soil against the stems as they grow for more white shank."},
+{n:"Potatoes",c:"v",k:"H",d:[70,110],so:[-4,-1],how:"P",fo:[-15,-12],fmin:200,sp:"12 in",dp:"4 in, then hill",sun:"Full sun",t:"Plant seed pieces with at least two eyes. Keep hilling so tubers stay covered from light."},
+{n:"Celery",c:"v",k:"H",d:[100,130],si:[-12,-10],so:[0,2],how:"T",sp:"8–10 in",dp:"Surface",sun:"Full sun",t:"Needs steady moisture the whole season. Seed needs light to sprout, so don't cover it."},
+{n:"Florence fennel",c:"v",k:"H",d:[80,100],so:[-2,2],how:"S",fo:[-12,-10],sp:"8–12 in",dp:"¼ in",sun:"Full sun",t:"Bulbs form best in cool weather. Keep it away from dill."},
+{n:"Endive & escarole",c:"v",k:"H",d:[80,100],so:[-2,2],how:"S",fo:[-12,-10],sp:"8–12 in",dp:"⅛ in",sun:"Full sun to part shade",t:"Less bitter from a fall crop. Tie up the outer leaves to blanch the heart."},
+{n:"Asparagus",c:"v",k:"F",so:[-4,-1],how:"P",z:[3,8],y:"Light harvest in year 2, full from year 3",sp:"12–18 in",dp:"Crowns 6 in deep",sun:"Full sun",t:"Plant crowns once and harvest for 15+ years. Don't cut the first year."},
+{n:"Rhubarb",c:"v",k:"F",so:[-4,-1],how:"P",z:[3,8],y:"Year 2",sp:"36 in",dp:"Crown buds 2 in deep",sun:"Full sun",t:"Needs winter cold; it struggles in hot Deep South summers. The leaves are poisonous; eat only the stalks."},
+{n:"Horseradish",c:"v",k:"F",so:[-4,-1],how:"P",z:[3,9],y:"First fall",sp:"18 in",dp:"Root cuttings at a slant",sun:"Full sun",t:"Spreads aggressively. A deep container or a dedicated corner keeps it in check."},
+{n:"Artichokes",c:"v",k:"H",si:[-10,-8],so:[0,2],how:"T",z:[7,11],y:"First or second year",sp:"36–48 in",dp:"¼ in",sun:"Full sun",t:"Perennial in mild winters. Mulch the crowns heavily where it freezes hard."},
+
+{n:"Basil",c:"h",k:"T",d:[60,90],si:[-6,-4],so:[1,3],how:"E",succ:1,sp:"10–12 in",dp:"¼ in",sun:"Full sun",t:"Hates cold; even 40°F nights blacken it. Pinch off flowers to keep leaves coming."},
+{n:"Cilantro",c:"h",k:"H",d:[45,70],so:[-2,1],how:"S",fo:[-8,-4],sp:"6 in",dp:"¼ in",sun:"Full sun to part shade",t:"Bolts fast in heat. In warm climates the fall sowing lasts longest, often through winter."},
+{n:"Dill",c:"h",k:"H",d:[40,60],so:[-1,2],how:"S",fo:[-10,-8],sp:"12 in",dp:"¼ in",sun:"Full sun",t:"Doesn't transplant well; sow it where it will grow. A host plant for swallowtail caterpillars."},
+{n:"Parsley",c:"h",k:"H",d:[70,90],si:[-10,-8],so:[-3,0],how:"T",sp:"8–10 in",dp:"¼ in",sun:"Full sun to part shade",t:"Slow to sprout; soak seed overnight first. Often survives winter and bolts the next spring."},
+{n:"Chives",c:"h",k:"F",si:[-8,-6],so:[-4,0],how:"E",z:[3,9],y:"First year",sp:"8–12 in",dp:"¼ in",sun:"Full sun",t:"Perennial. Divide clumps every few years."},
+{n:"Mint",c:"h",k:"F",so:[0,4],how:"P",z:[3,8],y:"First year",sp:"18–24 in",dp:"Plants",sun:"Part shade to full sun",t:"Spreads by runners and takes over beds. Grow it in a pot."},
+{n:"Oregano",c:"h",k:"F",so:[0,3],how:"P",z:[4,9],y:"First year",sp:"12–18 in",dp:"Plants",sun:"Full sun",t:"Most flavor in lean, dry soil. Cut back hard after flowering."},
+{n:"Thyme",c:"h",k:"F",si:[-10,-8],so:[0,3],how:"E",z:[5,9],y:"First year",sp:"8–12 in",dp:"Surface",sun:"Full sun",t:"Needs sharp drainage; wet feet kill it faster than cold."},
+{n:"Sage",c:"h",k:"F",so:[0,3],how:"P",z:[5,8],y:"First year",sp:"18–24 in",dp:"Plants",sun:"Full sun",t:"Water sparingly. Humid summers can rot it, so give it airflow."},
+{n:"Rosemary",c:"h",k:"H",so:[1,4],how:"P",z:[7,10],y:"First year",sp:"24–36 in",dp:"Plants",sun:"Full sun",t:"Start from plants, not seed. In zone 7 plant a hardy variety like 'Arp' in a sheltered spot."},
+{n:"Lavender",c:"h",k:"F",so:[1,4],how:"P",z:[5,9],y:"Second year",sp:"18–24 in",dp:"Plants",sun:"Full sun",t:"Needs fast-draining soil. Lavandins such as 'Phenomenal' handle Southern humidity better than English lavender."},
+{n:"French tarragon",c:"h",k:"F",so:[0,3],how:"P",z:[4,8],y:"First year",sp:"18–24 in",dp:"Plants",sun:"Full sun",t:"Buy plants; tarragon seed is the flavorless Russian kind. Struggles in hot, humid summers."},
+{n:"Lemon balm",c:"h",k:"F",so:[0,3],how:"E",z:[4,9],y:"First year",sp:"18 in",dp:"Surface",sun:"Part shade to full sun",t:"A mint relative that self-seeds freely. Cut before it flowers."},
+{n:"Marjoram",c:"h",k:"T",d:[70,90],si:[-8,-6],so:[1,3],how:"T",sp:"8–10 in",dp:"Surface",sun:"Full sun",t:"Grown as an annual except in the warmest zones. Milder than oregano."},
+{n:"Summer savory",c:"h",k:"T",d:[60,70],so:[1,3],how:"S",sp:"6–10 in",dp:"Surface",sun:"Full sun",t:"The classic herb for beans, fresh or dried."},
+{n:"German chamomile",c:"h",k:"H",d:[60,70],so:[-2,1],how:"S",fo:[-10,-8],sp:"6–8 in",dp:"Surface",sun:"Full sun",t:"Seed needs light to sprout. Pick flowers when fully open and dry them for tea."},
+{n:"Borage",c:"h",k:"H",d:[50,60],so:[0,2],how:"S",sp:"12–18 in",dp:"½ in",sun:"Full sun",t:"Blue flowers pull in bees. Self-seeds year after year."},
+{n:"Calendula",c:"h",k:"H",d:[50,60],so:[-2,1],how:"S",fo:[-10,-8],sp:"8–12 in",dp:"¼ in",sun:"Full sun",t:"Blooms through cool weather and fades in summer heat. Petals are edible."},
+{n:"Nasturtiums",c:"h",k:"T",d:[50,60],so:[1,3],how:"S",sp:"10–12 in",dp:"½ in",sun:"Full sun",t:"Leaves and flowers are edible and peppery. Rich soil gives leaves instead of flowers."},
+{n:"Stevia",c:"h",k:"T",so:[2,4],how:"P",sp:"18 in",dp:"Plants",sun:"Full sun",t:"Leaves are sweetest just before the plant flowers in fall."},
+{n:"Lemongrass",c:"h",k:"T",so:[2,4],how:"P",sp:"24–36 in",dp:"Plants",sun:"Full sun",t:"Perennial only in frost-free areas. Elsewhere, pot up a division to bring in for winter."},
+{n:"Catnip",c:"h",k:"F",so:[-2,2],how:"E",z:[3,9],y:"First year",sp:"18–24 in",dp:"¼ in",sun:"Full sun to part shade",t:"Hardy and self-seeding. Cats will flatten young plants, so cage them at first."},
+{n:"Bay laurel",c:"h",k:"H",so:[1,4],how:"P",z:[8,11],y:"Second year",sp:"4–6 ft",dp:"Plants",sun:"Full sun to part shade",t:"A slow-growing shrub. In zone 7 and colder, keep it in a pot and bring it in."},
+{n:"Lovage",c:"h",k:"F",so:[-2,1],how:"P",z:[4,8],y:"Second year",sp:"24–36 in",dp:"Plants",sun:"Full sun to part shade",t:"Tastes like strong celery. A big plant, so one is plenty."},
+
+{n:"Strawberries",c:"f",k:"F",so:[-4,0],fo:[-6,-2],fz:7,how:"P",z:[4,9],y:"Next spring",sp:"12–18 in",dp:"Crown at soil level",sun:"Full sun",t:"In zones 7 and warmer, plant in fall for a crop next spring. Colder areas plant in early spring. Keep the crown out of the soil."},
+{n:"Blueberries",c:"f",k:"F",so:[-6,-2],fo:[2,10],fz:7,how:"P",z:[4,9],y:"2–3 years",sp:"4–6 ft",dp:"Same depth as the pot",sun:"Full sun",t:"Needs acid soil (pH 4.5–5.5). Rabbiteye and southern highbush types suit zones 7–9, northern highbush colder areas. Plant two varieties for better crops."},
+{n:"Blackberries",c:"f",k:"F",so:[-6,-2],fo:[2,10],fz:7,how:"P",z:[5,9],y:"Second year",sp:"3–5 ft",dp:"Same depth as the pot",sun:"Full sun",t:"Thornless erect types are easiest. Cut out canes after they fruit."},
+{n:"Raspberries",c:"f",k:"F",so:[-4,-1],how:"P",z:[3,8],y:"Second year",sp:"2–3 ft",dp:"Same depth as the pot",sun:"Full sun",t:"Prefer cool summers. In hot areas choose heat-tolerant varieties like 'Dormanred'."},
+{n:"Muscadines",c:"f",k:"F",so:[-6,-2],fo:[2,10],fz:7,how:"P",z:[7,10],y:"2–3 years",sp:"15–20 ft on a trellis",dp:"Same depth as the pot",sun:"Full sun",t:"Native to the Southeast and largely disease-free. Female varieties need a self-fertile vine nearby."},
+{n:"Bunch grapes",c:"f",k:"F",so:[-4,-1],how:"P",z:[4,8],y:"3 years",sp:"6–10 ft",dp:"Same depth as the pot",sun:"Full sun",t:"In the Southeast, Pierce's disease kills most bunch grapes; choose resistant varieties."},
+{n:"Apples",c:"f",k:"F",so:[-6,-2],fo:[2,10],fz:7,how:"P",z:[3,8],y:"2–5 years",sp:"15–20 ft (semi-dwarf)",dp:"Graft union above soil",sun:"Full sun",t:"Most need a second variety for pollination. Match the variety's chill hours to your area; low-chill types for the South."},
+{n:"Pears",c:"f",k:"F",so:[-6,-2],fo:[2,10],fz:7,how:"P",z:[4,9],y:"3–5 years",sp:"15–20 ft",dp:"Graft union above soil",sun:"Full sun",t:"Choose fire-blight-resistant varieties. Pick European pears firm and ripen them indoors."},
+{n:"Peaches",c:"f",k:"F",so:[-6,-2],fo:[2,10],fz:7,how:"P",z:[5,8],y:"2–4 years",sp:"15–20 ft",dp:"Graft union above soil",sun:"Full sun",t:"Chill hours matter most: pick varieties that match your winters. Thin fruit to 6–8 inches apart for bigger peaches."},
+{n:"Plums",c:"f",k:"F",so:[-6,-2],fo:[2,10],fz:7,how:"P",z:[4,9],y:"3–4 years",sp:"15–20 ft",dp:"Graft union above soil",sun:"Full sun",t:"Japanese plums do better in the South than European types. Most need a pollinator."},
+{n:"Sweet cherries",c:"f",k:"F",so:[-6,-2],how:"P",z:[5,7],y:"3–5 years",sp:"20–30 ft",dp:"Graft union above soil",sun:"Full sun",t:"Need cool summers and plenty of chill; rarely succeed in the Deep South. Net against birds."},
+{n:"Figs",c:"f",k:"H",so:[0,4],how:"P",z:[7,10],y:"1–2 years",sp:"10–15 ft",dp:"2–4 in deeper than the pot",sun:"Full sun",t:"Plant in spring so roots settle before winter. 'Celeste' and 'Brown Turkey' are the most cold-hardy."},
+{n:"Persimmons",c:"f",k:"F",so:[-6,-2],fo:[2,10],fz:7,how:"P",z:[4,10],y:"3–5 years",sp:"15–20 ft",dp:"Same depth as the pot",sun:"Full sun",t:"American persimmons are hardy to zone 4; Asian types to about zone 7. Long taproot, so plant young."},
+{n:"Pawpaws",c:"f",k:"F",so:[-2,2],how:"P",z:[5,8],y:"4–6 years",sp:"15 ft",dp:"Same depth as the pot",sun:"Part shade when young, then sun",t:"Native. Plant two varieties for fruit, and shade young trees the first year."},
+{n:"Pomegranates",c:"f",k:"H",so:[0,4],how:"P",z:[7,10],y:"2–3 years",sp:"10–15 ft",dp:"Same depth as the pot",sun:"Full sun",t:"Choose a cold-hardy variety in zone 7. Drought tolerant once established."},
+{n:"Satsumas & hardy citrus",c:"f",k:"T",so:[1,6],how:"P",z:[8,11],y:"2–3 years",sp:"10–12 ft",dp:"Same depth as the pot",sun:"Full sun",t:"Satsumas take brief dips to about 20°F. In zone 8, plant on the south side of a building or grow in a pot."},
+{n:"Hardy kiwi",c:"f",k:"F",so:[-4,0],how:"P",z:[4,8],y:"3–5 years",sp:"10–15 ft on a trellis",dp:"Same depth as the pot",sun:"Full sun",t:"Grape-sized, smooth-skinned fruit. Plant one male for up to eight females."},
+{n:"Mulberries",c:"f",k:"F",so:[-6,-2],how:"P",z:[5,9],y:"2–3 years",sp:"20–30 ft",dp:"Same depth as the pot",sun:"Full sun",t:"Heavy crops with little care. Keep away from driveways; the fruit stains."},
+{n:"Elderberries",c:"f",k:"F",so:[-4,0],how:"P",z:[3,9],y:"Second year",sp:"6–8 ft",dp:"Same depth as the pot",sun:"Full sun to part shade",t:"Plant two varieties. Raw berries, stems and leaves are toxic; cook the fruit."},
+{n:"Currants & gooseberries",c:"f",k:"F",so:[-6,-2],how:"P",z:[3,6],y:"2–3 years",sp:"4–5 ft",dp:"2 in deeper than the pot",sun:"Part shade",t:"Need cool summers; they fail in hot, humid climates."},
+{n:"Pecans",c:"f",k:"F",so:[-6,-2],fo:[2,10],fz:7,how:"P",z:[6,9],y:"6–10 years",sp:"40–60 ft",dp:"Same depth as the pot",sun:"Full sun",t:"Plant two varieties with different pollen timing (Type I and Type II). Choose scab-resistant varieties in the humid Southeast."},
+{n:"Watermelon",c:"f",k:"T",d:[70,90],so:[2,4],how:"S",succ:1,sp:"36–72 in",dp:"1 in",sun:"Full sun",t:"Ripe when the tendril nearest the fruit dries and the ground spot turns creamy yellow."},
+{n:"Cantaloupe",c:"f",k:"T",d:[70,90],so:[2,4],how:"S",succ:1,sp:"36–60 in",dp:"1 in",sun:"Full sun",t:"Ripe when it slips off the vine with a gentle push."}
+];
+
+const FD=window.FROST_DATA;
+const ZIPS=new Map();
+FD.zips.split("\n").forEach(l=>{const i=l.indexOf("|");ZIPS.set(l.slice(0,i),l);});
+
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const CUM=[0,31,59,90,120,151,181,212,243,273,304,334];
+const $=id=>document.getElementById(id);
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+function norm(d){return ((Math.round(d)-1)%365+365)%365+1}
+function fmt(d){d=norm(d);let m=11;while(CUM[m]>=d)m--;return MON[m]+" "+(d-CUM[m]);}
+function doyOf(date){const m=date.getMonth(),d=date.getDate();return CUM[m]+Math.min(d,m===1?28:d);}
+function dateInput(d){d=norm(d);let m=11;while(CUM[m]>=d)m--;const y=new Date().getFullYear();return y+"-"+String(m+1).padStart(2,"0")+"-"+String(d-CUM[m]).padStart(2,"0");}
+function parseInput(v){const p=v.split("-");if(p.length!==3)return null;return CUM[+p[1]-1]+Math.min(+p[2],+p[1]===2?28:+p[2]);}
+function zoneNum(z){if(!z)return null;const m=/^(\d+)([ab])?$/.exec(z);if(!m)return null;return +m[1]+(m[2]==="b"?.5:0);}
+
+let S=null; // current place
+let stars=new Set(store.get("pbf-stars")||[]);
+let cat=store.get("pbf-cat")||"v";
+let openName=null;
+
+function lookup(zip){
+  const l=ZIPS.get(zip); if(!l) return null;
+  const [z,place,st,county,si,zone,km]=l.split("|");
+  const s=FD.stations[+si];
+  return {zip:z,place,st,county,zone,km:+km,station:s[0],elev:s[3],lst50:s[4],lst10:s[5],fst50:s[6],fst10:s[7],frostFree:s[4]===0};
+}
+
+function frost(){
+  const ov=store.get("pbf-ov-"+S.zip)||{};
+  let lf=S.frostFree?31:S.lst50, ff=S.frostFree?349:S.fst50;
+  if(ov.lf) lf=ov.lf; if(ov.ff) ff=ov.ff;
+  if(ff<=lf) ff+=365;
+  return {lf,ff,ov:!!(ov.lf||ov.ff)};
+}
+
+const VERB={S:"Sow outside",T:"Transplant outside",E:"Sow or transplant outside",P:"Plant"};
+function windows(c,F,zn){
+  const w=[];
+  if(c.si) w.push({t:"indoor",s:F.lf+7*c.si[0],e:F.lf+7*c.si[1],label:"Start seeds indoors"});
+  if(c.so){
+    let e=F.lf+7*c.so[1];
+    if(c.succ&&c.d){const last=F.ff-(c.d[1]+14); if(last>e) e=last;}
+    w.push({t:"plant",s:F.lf+7*c.so[0],e,label:c.fo?(VERB[c.how]+" (spring)"):VERB[c.how]});
+  }
+  const season=F.ff-F.lf;
+  const fallOk=c.fo&&(!c.fmin||season>=c.fmin)&&(!c.fz||(zn!=null&&zn>=c.fz));
+  if(fallOk){
+    if(c.fi) w.push({t:"fallindoor",s:F.ff+7*c.fi[0],e:F.ff+7*c.fi[1],label:"Start fall seedlings indoors"});
+    w.push({t:"fall",s:F.ff+7*c.fo[0],e:F.ff+7*c.fo[1],label:VERB[c.how]+(c.so?" (fall)":"")});
+  }
+  w.forEach(x=>x.how=c.how);
+  return w;
+}
+function fits(c,zn){ if(!c.z||zn==null) return true; return zn>=c.z[0]&&zn<c.z[1]+1; }
+function active(w,t){for(const k of [-365,0,365]){if(t>=w.s+k&&t<=w.e+k)return {s:w.s+k,e:w.e+k};}return null;}
+function startsSoon(w,t,days){for(const k of [-365,0,365]){const s=w.s+k;if(s>t&&s<=t+days)return s;}return null;}
+
+function renderPlace(){
+  const F=frost(), zn=zoneNum(S.zone);
+  const season=Math.round(F.ff-F.lf);
+  const bird=S.st==="GA"&&!S.frostFree;
+  const html=[];
+  html.push(`<div>
+    <p class="eyebrow">Your garden</p>
+    <p class="town">${esc(S.place)}, ${esc(S.st)}</p>
+    <p class="muted">${esc(S.county)}${/County|Parish|Borough|Municipality|city/i.test(S.county)?"":" County"} · ZIP ${S.zip}</p>
+    <div class="chips">${S.zone?`<span class="chip">Zone ${esc(S.zone)}</span>`:""}${S.frostFree?`<span class="chip frost">Frost-free</span>`:`<span class="chip frost">${season}-day growing season</span>`}${F.ov?`<span class="chip warn">Your own frost dates</span>`:""}</div>
+    <p class="source">Frost records from the NOAA station at ${esc(titleCase(S.station))}, ${S.km} km away (${S.elev.toLocaleString()} ft), averaged 1991–2020.</p>
+  </div>`);
+  if(S.frostFree){
+    html.push(`<div class="notice">This area rarely or never freezes, so frost dates don't set the calendar here. The planner uses a stand-in winter of Jan 31 to Dec 15 below; in hot climates most vegetables grow from fall through spring. Set your own dates under “Adjust frost dates”.</div>`);
+  } else {
+    html.push(`<div class="frostgrid">
+      <div class="fd"><p class="eyebrow">Last spring frost</p><p class="big">${fmt(F.lf)}</p><p class="sub">${F.ov?"Your date":`1 year in 10 it's after ${fmt(S.lst10)}`}</p></div>
+      <div class="fd"><p class="eyebrow">First fall frost</p><p class="big">${fmt(F.ff)}</p><p class="sub">${F.ov?"Your date":`1 year in 10 it's before ${fmt(S.fst10)}`}</p></div>
+      <div class="fd season"><p class="eyebrow">Frost-free days</p><p class="big">${season}</p><p class="sub">Between the average dates</p></div>
+    </div>`);
+  }
+  if(bird) html.push(`<div class="bird"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13c3 0 5-1 7-4 1.5-2.2 3.5-3 5.5-3S20 7.5 21 9l-3 1c0 5-4 8-9 8H5"/><path d="M9 18l-2 3"/><circle cx="17" cy="8.5" r=".6" fill="currentColor"/></svg><p><b>The old rule:</b> don't set out tender plants until you hear the first whip-poor-will. They get back to Georgia in late March and early April, right around the last frost here. The tomatoes, peppers and squash below go out about then.</p></div>`);
+  html.push(`<details class="adjust"><summary>Adjust frost dates</summary>
+    <p class="muted" style="margin-top:8px">If you know your own spot runs early or late (a low frost pocket, a warm hillside), set your dates and the whole calendar moves with them.</p>
+    <div class="adjrow">
+      <label for="lfin">Last spring frost<input type="date" id="lfin" value="${dateInput(F.lf)}"></label>
+      <label for="ffin">First fall frost<input type="date" id="ffin" value="${dateInput(F.ff)}"></label>
+      <button class="btn small" type="button" id="ovsave">Use these dates</button>
+      ${F.ov?`<button class="btn small ghost" type="button" id="ovreset">Back to NOAA dates</button>`:""}
+    </div></details>`);
+  $("place").innerHTML=html.join("");
+  $("ovsave").onclick=()=>{const lf=parseInput($("lfin").value),ff=parseInput($("ffin").value);if(!lf||!ff)return;store.set("pbf-ov-"+S.zip,{lf,ff});renderAll(true);};
+  if($("ovreset")) $("ovreset").onclick=()=>{try{localStorage.removeItem("pbf-ov-"+S.zip)}catch(e){};renderAll(true);};
+}
+
+function renderNow(){
+  const F=frost(), zn=zoneNum(S.zone), t=doyOf(new Date());
+  $("nowtitle").textContent="This week";
+  $("nowsub").textContent="Today is "+new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"});
+  const L={indoor:[],plant:[],soon:[]};
+  for(const c of CROPS){
+    if(!fits(c,zn)) continue;
+    for(const w of windows(c,F,zn)){
+      const a=active(w,t);
+      if(a){ (w.t==="indoor"||w.t==="fallindoor"?L.indoor:L.plant).push({c,w,end:a.e,key:a.e}); }
+      else { const s=startsSoon(w,t,21); if(s) L.soon.push({c,w,start:s,key:s}); }
+    }
+  }
+  const put=(id,arr,soon)=>{
+    const seen=new Set(); arr=arr.filter(x=>{const k=x.c.n+(soon?x.w.t:"");if(seen.has(k))return false;seen.add(k);return true;});
+    arr.sort((a,b)=>(stars.has(b.c.n)-stars.has(a.c.n))||(a.key-b.key));
+    const ul=$(id);
+    if(!arr.length){ul.innerHTML=`<li style="border:0"><p class="empty">${soon?"Nothing new starts in the next three weeks.":"Nothing in its window right now."}</p></li>`;return;}
+    const MAX=10;
+    ul.innerHTML=arr.slice(0,MAX).map(x=>`<li><button type="button" data-open="${esc(x.c.n)}"><span class="nm">${stars.has(x.c.n)?"★ ":""}${esc(x.c.n)}</span><span class="when">${soon?`${shortVerb(x.w)} from ${fmt(x.start)}`:`${shortVerb(x.w)} until ${fmt(x.end)}`}</span></button></li>`).join("")+(arr.length>MAX?`<li><p class="more">and ${arr.length-MAX} more in the calendar below</p></li>`:"");
+  };
+  put("now-indoor",L.indoor); put("now-plant",L.plant); put("now-soon",L.soon,true);
+}
+function shortVerb(w){return w.t==="indoor"||w.t==="fallindoor"?"Indoors":({S:"Sow",T:"Transplant",E:"Sow",P:"Plant"})[w.how]||"Plant";}
+
+function renderCal(){
+  const F=frost(), zn=zoneNum(S.zone), t=doyOf(new Date());
+  const q=$("q").value.trim().toLowerCase(), mine=$("mine").checked, sort=$("sort").value;
+  let list=CROPS.filter(c=>(cat==="all"||c.c===cat)&&(!q||c.n.toLowerCase().includes(q))&&(!mine||stars.has(c.n)));
+  const W=new Map(list.map(c=>[c.n,windows(c,F,zn)]));
+  const first=c=>{const w=W.get(c.n);if(!w.length)return 999;const p=w.find(x=>x.t!=="indoor"&&x.t!=="fallindoor")||w[0];return norm(p.s);};
+  list.sort(sort==="az"?(a,b)=>a.n.localeCompare(b.n):(a,b)=>(fits(b,zn)-fits(a,zn))||(first(a)-first(b))||a.n.localeCompare(b.n));
+  const pct=d=>((norm(d)-1)/365*100).toFixed(3)+"%";
+  const lines=`<div class="vline lf" style="left:${pct(F.lf)}"></div><div class="vline ff" style="left:${pct(F.ff)}"></div><div class="vline today" style="left:${pct(t)}"></div>`;
+  const out=[];
+  out.push(`<div class="row mhead"><div class="lab">${list.length} plant${list.length===1?"":"s"}</div><div class="months">${MON.map(m=>`<span>${m}</span>`).join("")}<span class="vtag today" style="left:${pct(t)}">Today</span></div></div>`);
+  if(!list.length) out.push(`<p class="none">${mine?"Nothing starred yet. Tap the star next to a plant to add it to your garden.":"No plants match that search."}</p>`);
+  for(const c of list){
+    const w=W.get(c.n), ok=fits(c,zn), on=stars.has(c.n), open=openName===c.n;
+    const bars=w.map(x=>segs(x.s,x.e).map(([a,b])=>`<div class="bar ${x.t}" style="left:${((a-1)/365*100).toFixed(3)}%;width:${Math.max(.6,(b-a+1)/365*100).toFixed(3)}%" title="${esc(x.label)}: ${fmt(x.s)} – ${fmt(x.e)}"></div>`).join("")).join("");
+    out.push(`<div class="row crow${ok?"":" off"}" data-n="${esc(c.n)}">
+      <div class="name"><button class="star" type="button" aria-pressed="${on}" aria-label="${on?"Remove from":"Add to"} my garden: ${esc(c.n)}" data-star="${esc(c.n)}">${starSvg(on)}</button><button class="open" type="button" aria-expanded="${open}" data-open="${esc(c.n)}">${esc(c.n)}${c.fam?`<span class="fam-tag">Family way</span>`:""}</button></div>
+      <div class="track">${bars}${lines}</div>
+      ${open?detail(c,w,ok,zn,F):""}
+    </div>`);
+  }
+  $("cal").innerHTML=out.join("");
+}
+function segs(s,e){
+  if(e-s>=364) return [[1,365]];
+  const a=norm(s), b=a+(e-s);
+  return b<=365?[[a,b]]:[[a,365],[1,b-365]];
+}
+function detail(c,w,ok,zn,F){
+  const dot={indoor:"var(--seed)",fallindoor:"var(--seed)",plant:"var(--leaf)",fall:"var(--fall)"};
+  const wins=w.length?w.map(x=>`<li><span class="dot" style="background:${dot[x.t]}"></span><span><b>${fmt(x.s)} – ${fmt(x.e)}</b> &nbsp;${esc(x.label)}</span></li>`).join(""):`<li>No planting window fits your season.</li>`;
+  const kind={T:"Tender: killed by frost",H:"Half-hardy: takes a light frost",F:"Hardy: takes frost"}[c.k];
+  const facts=[];
+  if(c.d) facts.push(["Days to harvest",`${c.d[0]}–${c.d[1]}`]);
+  if(c.y) facts.push(["First harvest",c.y]);
+  facts.push(["Cold tolerance",kind],["Sun",c.sun],["Spacing",c.sp],["Planting depth",c.dp]);
+  if(c.z) facts.push(["Zones",`${c.z[0]}–${c.z[1]}`]);
+  const zoneNote=!ok?`<p class="chip warn" style="margin-top:10px">Outside its usual zones (${c.z[0]}–${c.z[1]}); you're in ${esc(S.zone)}</p>`:"";
+  const succ=c.succ?`<p class="muted" style="margin-top:8px;font-size:.9rem">Keep sowing through the window; the last date leaves time to harvest before frost.</p>`:"";
+  return `<div class="detail"><div><h3>${esc(c.n)}</h3><ul class="wins">${wins}</ul>${succ}${zoneNote}</div>
+    <dl class="facts">${facts.map(([a,b])=>`<dt>${a}</dt><dd>${esc(b)}</dd>`).join("")}</dl>
+    <p class="tip">${esc(c.t)}</p>${c.fam?family(c.fam):""}</div>`;
+}
+function family(f){
+  return `<div class="family"><p class="eyebrow">The family way</p><h4>${esc(f.title)}</h4><ol>${f.steps.map(s=>`<li>${esc(s)}</li>`).join("")}</ol><p>${esc(f.why)}</p></div>`;
+}
+function starSvg(on){return `<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3.1-5.4 3.1 1.2-6L3.3 9.5l6.1-.7z" fill="${on?"currentColor":"none"}" stroke="${on?"currentColor":"var(--muted)"}" stroke-width="1.6" stroke-linejoin="round"/></svg>`;}
+function esc(s){return String(s).replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[ch]);}
+function titleCase(s){return s.replace(/,?\s*US$/,"").replace(/\b([A-Z])([A-Z]+)\b/g,(m,a,b)=>/^(AP|INTL|FLD|SW|NE|NW|SE|ESE|WSW|ENE|WNW|NNE|NNW|SSE|SSW|US|[NSEW])$/.test(m)?m:a+b.toLowerCase()).replace(/, ([A-Za-z]{2})$/,(m,st)=>", "+st.toUpperCase());}
+
+function renderAll(keepOpen){ if(!keepOpen) openName=null; renderPlace(); renderNow(); renderCal(); }
+
+function setZip(zip,quiet){
+  const r=lookup(zip);
+  const err=$("err");
+  if(!r){ if(!quiet){err.textContent=`No match for ZIP ${zip}. Check the number, or try a nearby ZIP; some PO-box-only ZIPs aren't listed.`;err.hidden=false;} return false; }
+  err.hidden=true; err.style.color=""; S=r; $("zip").value=zip; store.set("pbf-zip",zip); renderAll(); return true;
+}
+
+$("zipform").addEventListener("submit",e=>{e.preventDefault();const z=$("zip").value.trim();if(!/^\d{5}$/.test(z)){$("err").textContent="Enter a 5-digit ZIP code.";$("err").hidden=false;return;}setZip(z);});
+$("cats").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;cat=b.dataset.c;store.set("pbf-cat",cat);[...$("cats").children].forEach(x=>x.setAttribute("aria-pressed",x===b));renderCal();});
+[...$("cats").children].forEach(x=>x.setAttribute("aria-pressed",x.dataset.c===cat));
+$("q").addEventListener("input",renderCal); $("sort").addEventListener("change",renderCal); $("mine").addEventListener("change",renderCal);
+document.addEventListener("click",e=>{
+  const st=e.target.closest("[data-star]");
+  if(st){const n=st.dataset.star;stars.has(n)?stars.delete(n):stars.add(n);store.set("pbf-stars",[...stars]);renderNow();renderCal();return;}
+  const op=e.target.closest("[data-open]");
+  if(op){
+    const n=op.dataset.open, fromNow=!!op.closest(".col");
+    if(fromNow){const c=CROPS.find(x=>x.n===n); if(c&&cat!=="all"&&c.c!==cat){cat=c.c;[...$("cats").children].forEach(x=>x.setAttribute("aria-pressed",x.dataset.c===cat));} $("q").value=""; $("mine").checked=false; openName=n;}
+    else openName=openName===n?null:n;
+    renderCal();
+    if(fromNow){const row=document.querySelector(`.crow[data-n="${CSS.escape(n)}"]`); if(row) row.scrollIntoView({block:"center",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});}
+  }
+});
+
+const DEFAULT_ZIP="30303", EXAMPLE_ZIP=true;
+const saved=store.get("pbf-zip");
+setZip(saved||DEFAULT_ZIP,true)||setZip(DEFAULT_ZIP,true);
+if(EXAMPLE_ZIP&&!saved){const e=$("err");e.textContent=`Showing ${S.place}, ${S.st} as an example. Enter your ZIP code to see your own dates.`;e.style.color="var(--muted)";e.hidden=false;}
+// #tomatoes style links open that plant
+const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const hc=CROPS.find(c=>slug(c.n)===location.hash.slice(1));
+if(hc){cat=hc.c;[...$("cats").children].forEach(x=>x.setAttribute("aria-pressed",x.dataset.c===cat));openName=hc.n;renderCal();}
+})();
+</script>
